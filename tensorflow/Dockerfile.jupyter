@@ -1,0 +1,6 @@
+ARG TF_VERSION
+FROM tensorflow:${TF_VERSION}
+
+LABEL maintainer=binwei.yang@gmail.com
+
+RUN pip3 install matplotlib jupyter
