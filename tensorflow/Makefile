@@ -5,6 +5,7 @@
 
 IMAGE_NAME ?=tensorflow
 JUPYTER_IMAGE_NAME ?=tensorflow-jupyter
+JUPYTER_DOCKER_FILE ?=Dockerfile.jupyter
 JUPYTER_PORT ?=8888
 
 file := 'VERSION'
@@ -21,8 +22,8 @@ container: repo
 save: container
 	docker save -o $(IMAGE_NAME).tar $(IMAGE_NAME)
 
-jupyter: repo
-	cd tensorflow/tensorflow/tools/dockerfiles && docker build -t $(JUPYTER_IMAGE_NAME) -f dockerfiles/cpu-jupyter.Dockerfile .
+jupyter:
+	docker build --build-arg TF_VERSION=$(VERSION) -t $(JUPYTER_IMAGE_NAME) -f ${JUPYTER_DOCKER_FILE} .
 	docker tag $(JUPYTER_IMAGE_NAME) $(JUPYTER_IMAGE_NAME):$(VERSION)
 
 run_notebooks:
