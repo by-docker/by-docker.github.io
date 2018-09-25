@@ -1,0 +1,6 @@
+ARG NMSLIB_VERSION
+FROM nmslib:${NMSLIB_VERSION}
+
+LABEL maintainer=binwei.yang@gmail.com
+
+RUN pip install jupyter
