@@ -1,0 +1,6 @@
+ARG FAISS_VERSION
+FROM faiss:${FAISS_VERSION}
+
+LABEL maintainer=binwei.yang@gmail.com
+
+RUN pip install jupyter
