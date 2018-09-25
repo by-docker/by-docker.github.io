@@ -1,0 +1,29 @@
+pipeline {
+  agent none
+  stages {
+    stage('InUse') {
+        parallel {
+            stage('Jupyter') {
+              agent {
+                docker {
+                  image 'tensorflow-jupyter'
+                  args '-p 8888:8888 --name tensorflow-jupyter'
+                }
+              }
+              steps {
+                sh 'bash -c "source /etc/bash.bashrc"'
+                sh returnStatus: true, script:  'jupyter notebook --notebook-dir=/home/notebooks --ip 0.0.0.0 --no-browser --allow-root'
+              }
+            }
+            stage('Shutdown') {
+                agent any
+                steps {
+                    input 'Finished using Jupyter? (Click "Proceed" to continue)'
+                    sh 'docker pause tensorflow-jupyter'
+                }
+            }
+
+        }
+    }
+  }
+}
