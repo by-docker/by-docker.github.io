@@ -16,15 +16,15 @@ repo:
 	cd tensorflow && git checkout $(VERSION)
 
 container: repo
-	cd tensorflow/tensorflow/tools/dockerfiles && docker build --pull	-t $(IMAGE_NAME) -f dockerfiles/cpu.Dockerfile .
+	cd tensorflow/tensorflow/tools/dockerfiles && docker build --pull -t $(IMAGE_NAME) -f dockerfiles/cpu.Dockerfile .
 	docker tag $(IMAGE_NAME) $(IMAGE_NAME):$(VERSION)
 
 save: container
 	docker save -o $(IMAGE_NAME).tar $(IMAGE_NAME)
 
-jupyter:
+jupyter: container
 	docker build --build-arg TF_VERSION=$(VERSION) -t $(JUPYTER_IMAGE_NAME) -f ${JUPYTER_DOCKER_FILE} .
 	docker tag $(JUPYTER_IMAGE_NAME) $(JUPYTER_IMAGE_NAME):$(VERSION)
 
-run_notebooks:
+run_notebooks: jupyter
 	docker run --rm -p $(JUPYTER_PORT):8888 -v $(NOTEBOOKS_DIR):/notebooks $(JUPYTER_IMAGE_NAME):$(VERSION) jupyter notebook --notebook-dir=/notebooks --ip 0.0.0.0 --no-browser --allow-root
